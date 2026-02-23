@@ -2,270 +2,256 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Website Builder Pro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AI Website Builder</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
+        :root { --sidebar-bg: #f9fafb; --border-color: #e5e7eb; }
         body { 
+            font-family: 'Inter', sans-serif;
             min-height: 100dvh; 
             display: flex; 
             flex-direction: column; 
             overflow: hidden; 
-            background-color: #0f172a;
-            color: white;
+            background-color: #ffffff;
+            color: #111827;
         }
-        .sidebar-scroll { max-height: calc(100dvh - 160px); overflow-y: auto; }
-        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); }
-        #preview-frame { background: white; width: 100%; height: 100%; border: none; }
-        #code-display { font-family: 'Fira Code', monospace; tab-size: 4; }
-        /* Hide scrollbars */
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+        .sidebar { background-color: var(--sidebar-bg); width: 260px; border-right: 1px solid var(--border-color); }
+        .main-content { flex: 1; display: flex; flex-direction: column; position: relative; }
+        .input-container { max-width: 800px; width: 90%; margin: 0 auto 24px auto; }
+        .pill-input { border-radius: 9999px; border: 1px solid var(--border-color); background: #f3f4f6; }
+        .greeting-gradient {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        #preview-frame { border: none; width: 100%; height: 100%; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        .hidden-view { display: none !important; }
     </style>
 </head>
 <body>
 
     <div class="flex flex-1 overflow-hidden">
-        <aside class="w-64 flex flex-col border-r border-slate-700 bg-slate-900 shrink-0 hidden md:flex">
+        <aside class="sidebar flex flex-col shrink-0 hidden md:flex">
             <div class="p-4">
-                <button onclick="createNewProject()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded transition flex items-center justify-center gap-2">
-                    <span>+</span> New Project
+                <button onclick="createNewProject()" class="w-full bg-[#e5e7eb] hover:bg-gray-300 text-gray-700 font-medium py-2.5 px-4 rounded-full transition flex items-center gap-2">
+                    <span class="text-xl">+</span> New Chat
                 </button>
             </div>
             
-            <nav class="flex-1 sidebar-scroll px-4 space-y-2" id="project-list">
+            <nav class="flex-1 overflow-y-auto px-4 space-y-1" id="project-list">
                 </nav>
 
-            <div class="p-4 border-t border-slate-700">
-                <button onclick="toggleSettings(true)" class="flex items-center gap-3 text-slate-400 hover:text-white transition w-full">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
+            <div class="p-4 border-t border-gray-200 space-y-4 text-gray-600">
+                <button onclick="toggleSettings(true)" class="flex items-center gap-3 hover:text-black transition w-full text-sm font-medium">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /></svg>
                     Settings
                 </button>
+                <div class="flex items-center gap-3 text-sm font-medium opacity-50 cursor-not-allowed">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
+                    Dark Mode
+                </div>
             </div>
         </aside>
 
-        <main class="flex-1 flex flex-col min-w-0">
-            <header class="h-14 border-b border-slate-700 flex items-center justify-between px-4 bg-slate-900/50">
-                <div class="flex gap-1.5">
-                    <div class="w-3 h-3 rounded-full bg-red-500"></div>
-                    <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
-                    <div class="w-3 h-3 rounded-full bg-green-500"></div>
+        <main class="main-content">
+            <header class="p-4 flex justify-between items-center bg-white/80 backdrop-blur-md sticky top-0 z-10">
+                <div class="flex gap-2">
+                    <div class="w-3 h-3 rounded-full bg-red-400"></div>
+                    <div class="w-3 h-3 rounded-full bg-yellow-400"></div>
+                    <div class="w-3 h-3 rounded-full bg-green-400"></div>
                 </div>
-
-                <div class="flex bg-slate-800 rounded-lg p-1">
-                    <button id="btn-preview" onclick="setView('preview')" class="px-4 py-1 rounded-md text-sm font-medium bg-slate-700 text-white">Preview</button>
-                    <button id="btn-code" onclick="setView('code')" class="px-4 py-1 rounded-md text-sm font-medium text-slate-400">Code</button>
+                <div class="flex bg-gray-100 rounded-full p-1 border border-gray-200">
+                    <button id="btn-preview" onclick="setView('preview')" class="px-5 py-1 rounded-full text-xs font-semibold bg-white shadow-sm transition">Preview</button>
+                    <button id="btn-code" onclick="setView('code')" class="px-5 py-1 rounded-full text-xs font-semibold text-gray-500 transition">Code</button>
                 </div>
-
-                <button onclick="downloadCode()" class="text-xs bg-slate-700 hover:bg-slate-600 px-3 py-1.5 rounded flex items-center gap-2">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                    Download
-                </button>
+                <button onclick="downloadCode()" class="text-xs font-semibold text-blue-600 hover:underline">Export HTML</button>
             </header>
 
-            <div class="flex-1 relative overflow-hidden">
-                <div id="view-preview" class="absolute inset-0">
-                    <iframe id="preview-frame" srcdoc="<body style='font-family:sans-serif; display:flex; justify-content:center; align-items:center; height:100vh;'><h1>Describe your website below to start...</h1></body>"></iframe>
+            <div id="empty-state" class="flex-1 flex flex-col items-center justify-center p-6 text-center">
+                <div class="w-16 h-16 bg-gradient-to-br from-blue-400 to-purple-400 rounded-2xl mb-6 shadow-lg shadow-blue-100 flex items-center justify-center overflow-hidden">
+                   <div class="w-full h-full bg-white/20 backdrop-blur-sm"></div>
                 </div>
-                <div id="view-code" class="absolute inset-0 hidden bg-[#1e1e1e] overflow-auto p-4">
-                    <pre><code id="code-display" class="text-green-400"></code></pre>
+                <h1 class="text-4xl font-bold mb-2 tracking-tight">Hello, <span class="greeting-gradient">User</span></h1>
+                <p class="text-gray-500 text-lg">How can I help you build today?</p>
+            </div>
+
+            <div id="project-view" class="flex-1 p-4 md:p-8 hidden-view overflow-hidden">
+                <div id="view-preview" class="h-full w-full">
+                    <iframe id="preview-frame"></iframe>
+                </div>
+                <div id="view-code" class="h-full w-full hidden-view bg-gray-900 rounded-xl p-4 overflow-auto">
+                    <pre><code id="code-display" class="text-sm text-blue-300"></code></pre>
                 </div>
             </div>
 
-            <footer class="p-4 bg-slate-900 border-t border-slate-700 shrink-0">
-                <div class="max-w-4xl mx-auto flex gap-2">
-                    <textarea id="prompt-input" rows="1" class="flex-1 bg-slate-800 border border-slate-600 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none text-white" placeholder="E.g. Build a landing page for a coffee shop with a dark theme..."></textarea>
-                    <button id="send-btn" onclick="generateWebsite()" class="bg-blue-600 hover:bg-blue-500 p-3 rounded-xl transition shadow-lg">
-                        <svg class="w-6 h-6 rotate-90" fill="currentColor" viewBox="0 0 20 20"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path></svg>
+            <footer class="shrink-0 pt-2 bg-white">
+                <div class="input-container relative">
+                    <textarea id="prompt-input" rows="1" class="pill-input w-full pl-6 pr-14 py-4 focus:outline-none focus:ring-2 focus:ring-blue-100 resize-none text-gray-700" placeholder="Ask anything..."></textarea>
+                    <button id="send-btn" onclick="generateWebsite()" class="absolute right-3 top-1/2 -translate-y-1/2 bg-blue-600 hover:bg-blue-700 p-2.5 rounded-full text-white transition shadow-md">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
                     </button>
                 </div>
+                <p class="text-[10px] text-gray-400 text-center pb-4 uppercase tracking-widest font-medium">AI can make mistakes. Check important info.</p>
             </footer>
         </main>
     </div>
 
-    <div id="settings-modal" class="fixed inset-0 bg-black/80 flex items-center justify-center z-50 hidden p-4">
-        <div class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-md overflow-hidden">
-            <div class="p-6 space-y-4">
-                <h2 class="text-xl font-bold">API Settings</h2>
+    <div id="settings-modal" class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 hidden p-4">
+        <div class="bg-white rounded-3xl w-full max-w-md overflow-hidden shadow-2xl border border-gray-100">
+            <div class="p-8 space-y-5">
+                <h2 class="text-2xl font-bold text-gray-800">API Configuration</h2>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-400 mb-1 uppercase">OpenRouter Endpoint</label>
-                    <input id="setting-url" type="text" class="w-full bg-slate-800 border border-slate-700 rounded p-2 text-sm" value="https://openrouter.ai/api/v1/chat/completions">
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">OpenRouter Endpoint</label>
+                    <input id="setting-url" type="text" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm focus:ring-2 focus:ring-blue-100" value="https://openrouter.ai/api/v1/chat/completions">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-400 mb-1 uppercase">API Key</label>
-                    <input id="setting-key" type="password" class="w-full bg-slate-800 border border-slate-700 rounded p-2 text-sm" placeholder="sk-or-...">
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">API Key</label>
+                    <input id="setting-key" type="password" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm focus:ring-2 focus:ring-blue-100" placeholder="sk-or-...">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-400 mb-1 uppercase">Model ID</label>
-                    <input id="setting-model" type="text" class="w-full bg-slate-800 border border-slate-700 rounded p-2 text-sm" value="deepseek/deepseek-r1:free">
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Model ID</label>
+                    <input id="setting-model" type="text" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm focus:ring-2 focus:ring-blue-100" value="deepseek/deepseek-r1:free">
                 </div>
-                <div class="flex gap-2 pt-4">
-                    <button onclick="saveSettings()" class="flex-1 bg-blue-600 py-2 rounded font-bold">Save</button>
-                    <button onclick="toggleSettings(false)" class="flex-1 bg-slate-700 py-2 rounded font-bold">Cancel</button>
+                <div class="flex gap-3 pt-4">
+                    <button onclick="saveSettings()" class="flex-1 bg-gray-900 text-white py-3 rounded-xl font-bold hover:bg-black transition">Save Settings</button>
+                    <button onclick="toggleSettings(false)" class="flex-1 bg-gray-100 text-gray-600 py-3 rounded-xl font-bold hover:bg-gray-200 transition">Cancel</button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        const SYSTEM_PROMPT = "You are an expert web developer. Output ONLY raw HTML code including Tailwind CSS via CDN. Do not include markdown blocks, explanations, or commentary. Start directly with <!DOCTYPE html>. Ensure the code is responsive and modern.";
+        const SYSTEM_PROMPT = "You are a web developer. Output ONLY raw HTML code with Tailwind CSS CDN. No markdown blocks, no commentary. Start with <!DOCTYPE html>.";
         
-        let state = {
-            currentCode: "",
-            projects: [],
-            activeProjectId: null
-        };
+        let state = { currentCode: "", projects: [], activeProjectId: null };
 
-        // Core Initialization
         window.onload = () => {
-            const saved = localStorage.getItem('ai_builder_state');
-            const savedSettings = JSON.parse(localStorage.getItem('ai_builder_settings') || '{}');
+            const saved = localStorage.getItem('site_builder_v2_state');
+            const savedSettings = JSON.parse(localStorage.getItem('site_builder_v2_settings') || '{}');
             
             if (saved) state = JSON.parse(saved);
             
-            // Set default settings if empty
             document.getElementById('setting-url').value = savedSettings.url || "https://openrouter.ai/api/v1/chat/completions";
             document.getElementById('setting-key').value = savedSettings.key || "";
             document.getElementById('setting-model').value = savedSettings.model || "deepseek/deepseek-r1:free";
             
             renderProjectList();
-            if (state.currentCode) updateUI(state.currentCode);
+            if (state.currentCode) displayProject(state.currentCode);
         };
 
-        // UI Logic
         function setView(view) {
             const isPreview = view === 'preview';
-            document.getElementById('view-preview').classList.toggle('hidden', !isPreview);
-            document.getElementById('view-code').classList.toggle('hidden', isPreview);
+            document.getElementById('view-preview').classList.toggle('hidden-view', !isPreview);
+            document.getElementById('view-code').classList.toggle('hidden-view', isPreview);
             
-            document.getElementById('btn-preview').classList.toggle('bg-slate-700', isPreview);
-            document.getElementById('btn-preview').classList.toggle('text-white', isPreview);
-            document.getElementById('btn-code').classList.toggle('bg-slate-700', !isPreview);
-            document.getElementById('btn-code').classList.toggle('text-white', !isPreview);
+            document.getElementById('btn-preview').classList.toggle('bg-white', isPreview);
+            document.getElementById('btn-preview').classList.toggle('shadow-sm', isPreview);
+            document.getElementById('btn-preview').classList.toggle('text-gray-500', !isPreview);
+            document.getElementById('btn-code').classList.toggle('bg-white', !isPreview);
+            document.getElementById('btn-code').classList.toggle('shadow-sm', !isPreview);
+            document.getElementById('btn-code').classList.toggle('text-gray-500', isPreview);
         }
 
-        function toggleSettings(show) {
-            document.getElementById('settings-modal').classList.toggle('hidden', !show);
-        }
-
-        function saveSettings() {
-            const settings = {
-                url: document.getElementById('setting-url').value,
-                key: document.getElementById('setting-key').value,
-                model: document.getElementById('setting-model').value
-            };
-            localStorage.setItem('ai_builder_settings', JSON.stringify(settings));
-            toggleSettings(false);
-        }
-
-        // Logic Functions
         async function generateWebsite() {
             const promptInput = document.getElementById('prompt-input');
             const userPrompt = promptInput.value.trim();
-            const settings = JSON.parse(localStorage.getItem('ai_builder_settings') || '{}');
+            const settings = JSON.parse(localStorage.getItem('site_builder_v2_settings') || '{}');
 
-            if (!userPrompt) return;
-            if (!settings.key) {
-                alert("Please set your API Key in Settings first.");
-                return toggleSettings(true);
-            }
+            if (!userPrompt || !settings.key) return !settings.key && toggleSettings(true);
 
-            const sendBtn = document.getElementById('send-btn');
-            sendBtn.disabled = true;
-            sendBtn.innerHTML = `<svg class="animate-spin h-5 w-5 text-white" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>`;
+            const btn = document.getElementById('send-btn');
+            btn.disabled = true;
+            btn.innerHTML = `<div class="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></div>`;
 
             try {
                 const response = await fetch(settings.url, {
                     method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${settings.key}`,
-                        'Content-Type': 'application/json',
-                        'HTTP-Referer': window.location.origin,
-                        'X-Title': 'AI Website Builder'
-                    },
+                    headers: { 'Authorization': `Bearer ${settings.key}`, 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         model: settings.model,
-                        messages: [
-                            { role: "system", content: SYSTEM_PROMPT },
-                            { role: "user", content: userPrompt }
-                        ]
+                        messages: [{ role: "system", content: SYSTEM_PROMPT }, { role: "user", content: userPrompt }]
                     })
                 });
 
                 // ANTI-CRASH LOGIC
                 const text = await response.text();
-                if (!response.ok) {
-                    alert("API Error: " + text);
-                    return;
-                }
+                if (!response.ok) { alert("API Error: " + text); return; }
 
                 const data = JSON.parse(text);
-                let code = data.choices[0].message.content;
-                
-                // Sanitize output (remove md wrappers if AI hallucinated them)
-                code = code.replace(/```html/g, "").replace(/```/g, "").trim();
+                let code = data.choices[0].message.content.replace(/```html/g, "").replace(/```/g, "").trim();
                 
                 state.currentCode = code;
                 saveProject(userPrompt, code);
-                updateUI(code);
+                displayProject(code);
                 promptInput.value = "";
             } catch (err) {
-                alert("Critical Error: " + err.message);
+                alert("Critical System Failure: " + err.message);
             } finally {
-                sendBtn.disabled = false;
-                sendBtn.innerHTML = `<svg class="w-6 h-6 rotate-90" fill="currentColor" viewBox="0 0 20 20"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path></svg>`;
+                btn.disabled = false;
+                btn.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>`;
             }
         }
 
-        function updateUI(code) {
+        function displayProject(code) {
+            document.getElementById('empty-state').classList.add('hidden-view');
+            document.getElementById('project-view').classList.remove('hidden-view');
             document.getElementById('preview-frame').srcdoc = code;
             document.getElementById('code-display').textContent = code;
         }
 
         function saveProject(name, code) {
             const id = Date.now();
-            state.projects.unshift({ id, name: name.substring(0, 25) + '...', code });
+            state.projects.unshift({ id, name: name.substring(0, 30), code });
             state.activeProjectId = id;
-            localStorage.setItem('ai_builder_state', JSON.stringify(state));
+            localStorage.setItem('site_builder_v2_state', JSON.stringify(state));
             renderProjectList();
-        }
-
-        function createNewProject() {
-            state.currentCode = "";
-            state.activeProjectId = null;
-            updateUI("<body style='font-family:sans-serif; display:flex; justify-content:center; align-items:center; height:100vh;'><h1>New Project Started...</h1></body>");
-            renderProjectList();
-        }
-
-        function loadProject(id) {
-            const project = state.projects.find(p => p.id === id);
-            if (project) {
-                state.currentCode = project.code;
-                state.activeProjectId = id;
-                updateUI(project.code);
-                renderProjectList();
-            }
         }
 
         function renderProjectList() {
             const list = document.getElementById('project-list');
             list.innerHTML = state.projects.map(p => `
-                <div onclick="loadProject(${p.id})" class="p-3 rounded-lg cursor-pointer truncate text-sm transition ${state.activeProjectId === p.id ? 'bg-blue-600/20 text-blue-400 border border-blue-600/50' : 'text-slate-400 hover:bg-slate-800'}">
+                <div onclick="loadProject(${p.id})" class="p-3 rounded-xl cursor-pointer truncate text-sm transition font-medium ${state.activeProjectId === p.id ? 'bg-gray-200 text-black' : 'text-gray-500 hover:bg-gray-100'}">
                     ${p.name}
                 </div>
             `).join('');
         }
 
+        function loadProject(id) {
+            const project = state.projects.find(p => p.id === id);
+            if (project) {
+                state.activeProjectId = id;
+                state.currentCode = project.code;
+                displayProject(project.code);
+                renderProjectList();
+            }
+        }
+
+        function createNewProject() {
+            state.activeProjectId = null;
+            state.currentCode = "";
+            document.getElementById('empty-state').classList.remove('hidden-view');
+            document.getElementById('project-view').classList.add('hidden-view');
+            renderProjectList();
+        }
+
+        function toggleSettings(show) { document.getElementById('settings-modal').classList.toggle('hidden', !show); }
+        
+        function saveSettings() {
+            localStorage.setItem('site_builder_v2_settings', JSON.stringify({
+                url: document.getElementById('setting-url').value,
+                key: document.getElementById('setting-key').value,
+                model: document.getElementById('setting-model').value
+            }));
+            toggleSettings(false);
+        }
+
         function downloadCode() {
-            if (!state.currentCode) return alert("No code to download!");
             const blob = new Blob([state.currentCode], { type: 'text/html' });
-            const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
-            a.href = url;
-            a.download = 'index.html';
+            a.href = URL.createObjectURL(blob);
+            a.download = 'website.html';
             a.click();
         }
     </script>
